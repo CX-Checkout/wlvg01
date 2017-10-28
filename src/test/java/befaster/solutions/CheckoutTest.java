@@ -2,6 +2,9 @@ package befaster.solutions;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static junit.framework.TestCase.assertEquals;
 
 public class CheckoutTest {
@@ -98,6 +101,33 @@ public class CheckoutTest {
 		assertEquals(10*4, checkout("FFFFFF"));
 
 		assertEquals(40*3, checkout("UUU"));
+	}
+
+	@Test
+	public void groupScheme() throws Exception {
+		assertEquals(20, checkout("S"));
+		assertEquals(20, checkout("T"));
+		assertEquals(17, checkout("X"));
+		assertEquals(20, checkout("Y"));
+		assertEquals(21, checkout("Z"));
+
+		assertEquals(45, checkout("SSS"));
+		assertEquals(45, checkout("TTT"));
+		assertEquals(45, checkout("XXX"));
+		assertEquals(45, checkout("YYY"));
+		assertEquals(45, checkout("ZZZ"));
+
+		assertEquals(45*2, checkout("SSSTTT"));
+		assertEquals(45*2, checkout("STXYZZ"));
+		assertEquals(45*2, checkout("XZYYTS"));
+		assertEquals(45*5, checkout("SSSTTTXXXYYYZZZ"));
+		assertEquals(45 + 20 + 17, checkout("STXYZ"));
+	}
+
+	@Test
+	public void groupIsNotCombinedWithOtherOffers() throws Exception {
+		assertEquals(45 + 50, checkout("SSSA"));
+//		assertEquals(20*3 + 130, checkout("SSSAAA"), "discount on group is 15, discount on A is 20");
 	}
 
 	//~~~ Helpers
