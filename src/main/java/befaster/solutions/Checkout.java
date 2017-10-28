@@ -25,7 +25,7 @@ public class Checkout {
         totalPrice += singleThresholdScheme(skus, "B", 2, 45);
         totalPrice += singleThresholdScheme(skus, "K", 2, 150);
         totalPrice += singleThresholdScheme(skus, "P", 5, 200);
-        totalPrice += singleThresholdScheme(skus, "Q", 3, 150);
+        totalPrice += singleThresholdScheme(skus, "Q", 3, 80);
 
         totalPrice += differentThresholdsScheme(skus, "A", 3, 130, 5, 200);
         totalPrice += differentThresholdsScheme(skus, "H", 5, 45, 10, 80);
