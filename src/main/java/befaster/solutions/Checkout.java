@@ -11,9 +11,23 @@ public class Checkout {
         return checkout.calculateTotalPrice(products);
     }
 
-
     private int calculateTotalPrice(List<String> skus) {
         int totalPrice = 0;
+
+        while(countSku(skus, "F") >= 3) {
+            if(countSku(skus, "F") >= 3) {
+//				long howManyFs = countSku(skus, "F");
+//				long numberOfPairs = howManyFs % 2;
+//				for(int i = 0; i < numberOfPairs; i++) {
+//					skus.remove("F");
+//				}
+
+                totalPrice += getPriceOfSingleProduct("F") * 2;
+                skus.remove("F");
+                skus.remove("F");
+                skus.remove("F");
+            }
+        }
 
         while(countSku(skus, "E") >= 2) {
             if(countSku(skus, "E") >= 2) {
@@ -86,6 +100,9 @@ public class Checkout {
         }
         if(sku.equals("E")) {
             return 40;
+        }
+        if(sku.equals("F")) {
+            return 10;
         }
         throw new IllegalSkuException(sku);
     }

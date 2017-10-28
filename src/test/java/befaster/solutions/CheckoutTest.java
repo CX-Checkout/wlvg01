@@ -26,6 +26,7 @@ public class CheckoutTest {
 		assertEquals(20, checkout("C"));
 		assertEquals(15, checkout("D"));
 		assertEquals(40, checkout("E"));
+		assertEquals(10, checkout("F"));
 	}
 
 	@Test
@@ -84,6 +85,15 @@ public class CheckoutTest {
 	@Test
 	public void specailDealForJustE() throws Exception {
 		assertEquals(80, checkout("EE"));
+	}
+
+	@Test
+	public void specailDealForJustF() throws Exception {
+		assertEquals(10 * 2, checkout("FF"));
+		assertEquals(10 * 2, checkout("FFF"));
+		assertEquals(10 * 3, checkout("FFFF"));
+		assertEquals(10 * 4, checkout("FFFFF"));
+		assertEquals(10 * 4, checkout("FFFFFF"));
 	}
 
 	//~~~ Helpers
