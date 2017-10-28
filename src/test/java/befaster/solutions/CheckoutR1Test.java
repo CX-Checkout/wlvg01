@@ -1,48 +1,44 @@
 package befaster.solutions;
 
-
-import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
 
 public class CheckoutR1Test {
-	private CheckoutR1 checkout;
 
-	@Before
-	public void setup() throws Exception {
-		checkout = new CheckoutR1();
-	}
-	
 	@Test
 	public void emptyListOfProducts() throws Exception {
-		assertEquals(0, checkout.checkout(""));
+		assertEquals(0, checkout(""));
 	}
 
-	@Test
+    private int checkout(String skus) {
+        return Checkout.checkout(skus);
+    }
+
+    @Test
 	public void atLeastOneUnknownSku() throws Exception {
-		assertEquals(-1, checkout.checkout("X"));
-		assertEquals(-1, checkout.checkout("a"));
-		assertEquals(-1, checkout.checkout("-"));
-		assertEquals(-1, checkout.checkout("ABCa"));
+		assertEquals(-1, checkout("X"));
+		assertEquals(-1, checkout("a"));
+		assertEquals(-1, checkout("-"));
+		assertEquals(-1, checkout("ABCa"));
 	}
 	
 	@Test
 	public void singleProduct() throws Exception {
-		assertEquals(50, checkout.checkout("A"));
-		assertEquals(30, checkout.checkout("B"));
-		assertEquals(20, checkout.checkout("C"));
-		assertEquals(15, checkout.checkout("D"));
+		assertEquals(50, checkout("A"));
+		assertEquals(30, checkout("B"));
+		assertEquals(20, checkout("C"));
+		assertEquals(15, checkout("D"));
 	}
 	
 	@Test
 	public void allProducts() throws Exception {
-		assertEquals(50 + 30 + 20 + 15, checkout.checkout("ABCD"));
+		assertEquals(50 + 30 + 20 + 15, checkout("ABCD"));
 	}
 	
 	@Test
 	public void specialPriceFor3As() throws Exception {
-		assertEquals(130, checkout.checkout("AAA"));
+		assertEquals(130, checkout("AAA"));
 	}
 	
 	@Test
