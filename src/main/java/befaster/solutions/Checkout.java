@@ -1,6 +1,7 @@
 package befaster.solutions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Checkout {
@@ -14,53 +15,21 @@ public class Checkout {
     private int calculateTotalPrice(List<String> skus) {
         int totalPrice = 0;
 
-        while(countSku(skus, "F") >= 3) {
-            if(countSku(skus, "F") >= 3) {
-//				long howManyFs = countSku(skus, "F");
-//				long numberOfPairs = howManyFs % 2;
-//				for(int i = 0; i < numberOfPairs; i++) {
-//					skus.remove("F");
-//				}
+        totalPrice += xProductsAndSameOneFree(skus, 2, "F", 1);
+        totalPrice += xProductsAndSameOneFree(skus, 3, "U", 1);
 
-                totalPrice += getPriceOfSingleProduct("F") * 2;
-                skus.remove("F");
-                skus.remove("F");
-                skus.remove("F");
-            }
-        }
+        totalPrice += xProductsAndOtherOneFree(skus, 2, "E", "B");
+        totalPrice += xProductsAndOtherOneFree(skus, 3, "N", "M");
+        totalPrice += xProductsAndOtherOneFree(skus, 3, "R", "Q");
 
-        while(countSku(skus, "E") >= 2) {
-            if(countSku(skus, "E") >= 2) {
-                totalPrice += getPriceOfSingleProduct("E") * 2;
-                skus.remove("E");
-                skus.remove("E");
-                skus.remove("B");
-            }
-        }
+        totalPrice += singleThresholdScheme(skus, "B", 2, 45);
+        totalPrice += singleThresholdScheme(skus, "K", 2, 150);
+        totalPrice += singleThresholdScheme(skus, "P", 5, 200);
+        totalPrice += singleThresholdScheme(skus, "Q", 3, 150);
 
-        while(countSku(skus, "A") >= 3) {
-            if(countSku(skus, "A") >= 5) {
-                totalPrice += 200;
-                skus.remove("A");
-                skus.remove("A");
-                skus.remove("A");
-                skus.remove("A");
-                skus.remove("A");
-            } else {
-                totalPrice += 130;
-                skus.remove("A");
-                skus.remove("A");
-                skus.remove("A");
-            }
-        }
-
-        while(countSku(skus, "B") >= 2) {
-            if(countSku(skus, "B") >= 2) {
-                totalPrice += 45;
-                skus.remove("B");
-                skus.remove("B");
-            }
-        }
+        totalPrice += differentThresholdsScheme(skus, "A", 3, 130, 5, 200);
+        totalPrice += differentThresholdsScheme(skus, "H", 5, 45, 10, 80);
+        totalPrice += differentThresholdsScheme(skus, "V", 2, 90, 3, 130);
 
         try {
             for(String product: skus) {
@@ -71,6 +40,77 @@ public class Checkout {
             return -1;
         }
         return totalPrice;
+    }
+
+    private int singleThresholdScheme(List<String> skus, String sku, int threshold, int specialPrice) {
+        int priceIncrement = 0;
+
+        while(countSku(skus, sku) >= threshold) {
+            if(countSku(skus, sku) >= threshold) {
+                priceIncrement += specialPrice;
+                for(int i = 0; i < threshold; i++) {
+                    skus.remove(sku);
+                }
+            }
+        }
+        return priceIncrement;
+    }
+
+    private int xProductsAndSameOneFree(List<String> skus, int bought, String sku, int free) {
+        int priceIncrement = 0;
+        int numberOfAllSpecialSkus = bought + free;
+
+        while(countSku(skus, sku) >= numberOfAllSpecialSkus) {
+            if(countSku(skus, sku) >= numberOfAllSpecialSkus) {
+//				long howManyFs = countSku(skus, "F");
+//				long numberOfPairs = howManyFs % 2;
+//				for(int i = 0; i < numberOfPairs; i++) {
+//					skus.remove("F");
+//				}
+
+                priceIncrement += getPriceOfSingleProduct(sku) * bought;
+                for(int i = 0; i < numberOfAllSpecialSkus; i++) {
+                    skus.remove(sku);
+                }
+            }
+        }
+        return priceIncrement;
+    }
+
+    private int xProductsAndOtherOneFree(List<String> skus, int threshold1, String skuBought, String skuFree) {
+        int priceIncrement = 0;
+
+        while(countSku(skus, skuBought) >= threshold1) {
+            if(countSku(skus, skuBought) >= threshold1) {
+                priceIncrement += getPriceOfSingleProduct(skuBought) * threshold1;
+                for(int i = 0; i < threshold1; i++) {
+                    skus.remove(skuBought);
+                }
+
+                skus.remove(skuFree);
+            }
+        }
+        return priceIncrement;
+    }
+
+    // ORDER MATTERS (it should be ascending)
+    private int differentThresholdsScheme(List<String> skus, String sku, int threshold1, int price1, int threshold2, int price2) {
+        int priceIncrement = 0;
+        while(countSku(skus, sku) >= threshold1) {
+            if(countSku(skus, sku) >= threshold2) {
+                priceIncrement += price2;
+                for(int i = 0; i < threshold2; i++) {
+                    skus.remove(sku);
+                }
+            } else {
+                priceIncrement += price1;
+                for(int i = 0; i < threshold1; i++) {
+                    skus.remove(sku);
+                }
+            }
+        }
+
+        return priceIncrement;
     }
 
     private long countSku(List<String> skus, String a) {
@@ -86,25 +126,37 @@ public class Checkout {
     }
 
     private Integer getPriceOfSingleProduct(String sku) {
-        if(sku.equals("A")) {
-            return 50;
-        }
-        if(sku.equals("B")) {
-            return 30;
-        }
-        if(sku.equals("C")) {
-            return 20;
-        }
-        if(sku.equals("D")) {
-            return 15;
-        }
-        if(sku.equals("E")) {
-            return 40;
-        }
-        if(sku.equals("F")) {
-            return 10;
-        }
-        throw new IllegalSkuException(sku);
+        HashMap<String, Integer> catalogue = new HashMap<>();
+        catalogue.put("A", 50);
+        catalogue.put("B", 30);
+        catalogue.put("C", 20);
+        catalogue.put("D", 15);
+        catalogue.put("E", 40);
+        catalogue.put("F", 10);
+        catalogue.put("G", 20);
+        catalogue.put("H", 10);
+        catalogue.put("I", 35);
+        catalogue.put("J", 60);
+        catalogue.put("K", 80);
+        catalogue.put("L", 90);
+        catalogue.put("M", 15);
+        catalogue.put("N", 40);
+        catalogue.put("O", 10);
+        catalogue.put("P", 50);
+        catalogue.put("Q", 30);
+        catalogue.put("R", 50);
+        catalogue.put("S", 30);
+        catalogue.put("T", 20);
+        catalogue.put("U", 40);
+        catalogue.put("V", 50);
+        catalogue.put("W", 20);
+        catalogue.put("X", 90);
+        catalogue.put("Y", 10);
+        catalogue.put("Z", 50);
+
+        Integer integer = catalogue.get(sku);
+        if(integer == null) throw new IllegalSkuException(sku);
+        return integer;
     }
 
     private static class IllegalSkuException extends RuntimeException {
